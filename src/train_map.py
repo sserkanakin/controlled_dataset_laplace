@@ -1,4 +1,4 @@
-"""Train WideResNet on CIFAR-10 and evaluate on colour-shifted test set."""
+# python
 from __future__ import annotations
 import argparse
 import random
@@ -9,6 +9,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
+from tqdm import tqdm
 
 from models.wrn import WideResNet
 
@@ -60,15 +61,15 @@ def main() -> None:
                                                            shifted['targets']),
                             batch_size=args.batch_size)
 
-    device = torch.device('cpu')
+    device = torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
     model = WideResNet(num_classes=5)
     model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
     criterion = nn.CrossEntropyLoss()
 
     model.train()
-    for _ in range(args.epochs):
-        for x, y in trainloader:
+    for epoch in range(args.epochs):
+        for x, y in tqdm(trainloader, desc=f"Epoch {epoch+1}/{args.epochs}"):
             optimizer.zero_grad()
             out = model(x.to(device))
             loss = criterion(out, y.to(device))
@@ -81,7 +82,7 @@ def main() -> None:
     all_probs = []
     all_labels = []
     with torch.no_grad():
-        for x, y in testloader:
+        for x, y in tqdm(testloader, desc="Evaluating"):
             logits = model(x.to(device))
             probs = torch.softmax(logits, dim=1)
             all_probs.append(probs.cpu())
@@ -96,6 +97,7 @@ def main() -> None:
 
     print(f"ECE_MAP={ece}")
     print(f"ACC_MAP={acc}")
+
 
 if __name__ == '__main__':
     main()

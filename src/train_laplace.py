@@ -1,3 +1,4 @@
+# python
 """Wrap trained model with Laplace approximation and re-evaluate."""
 from __future__ import annotations
 import argparse
@@ -8,6 +9,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
+from tqdm import tqdm
 from laplace import Laplace
 
 from models.wrn import WideResNet
@@ -39,8 +41,12 @@ def main() -> None:
     testloader = DataLoader(torch.utils.data.TensorDataset(shifted['data'],
                                                            shifted['targets']),
                             batch_size=128)
-
-    device = torch.device('cpu')
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
     model = WideResNet(num_classes=5)
     model.load_state_dict(torch.load(data_dir / 'wrn_map.pt', map_location=device))
     model.to(device)
@@ -53,7 +59,7 @@ def main() -> None:
     all_probs = []
     all_labels = []
     with torch.no_grad():
-        for x, y in testloader:
+        for x, y in tqdm(testloader, desc="Evaluating"):
             f_preds = la(x.to(device))
             probs = torch.softmax(f_preds, dim=1)
             all_probs.append(probs.cpu())
@@ -77,6 +83,7 @@ def main() -> None:
 
     if ece >= 0.5 * ece_map or abs(acc_map - acc) > 0.002:
         exit(1)
+
 
 if __name__ == '__main__':
     main()
