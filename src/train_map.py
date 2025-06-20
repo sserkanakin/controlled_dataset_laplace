@@ -61,7 +61,12 @@ def main() -> None:
                                                            shifted['targets']),
                             batch_size=args.batch_size)
 
-    device = torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
     model = WideResNet(num_classes=5)
     model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
