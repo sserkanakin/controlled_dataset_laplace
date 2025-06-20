@@ -64,13 +64,17 @@ def main() -> None:
     acc = (probs.argmax(1) == labels).float().mean().item()
     ece = ece_score(probs, labels)
 
-    print(f"ECE_LAPLACE={ece}")
-    print(f"ACC_LAPLACE={acc}")
+    torch.save({'probs': probs, 'labels': labels}, data_dir / 'laplace_probs.pt')
 
-    # failure conditions
     map_scores = torch.load(data_dir / 'map_scores.pt')
     ece_map = map_scores['ece']
     acc_map = map_scores['acc']
+
+    print(f"ECE_MAP={ece_map}")
+    print(f"ECE_LAPLACE={ece}")
+    print(f"ACC_MAP={acc_map}")
+    print(f"ACC_LAPLACE={acc}")
+
     if ece >= 0.5 * ece_map or abs(acc_map - acc) > 0.002:
         exit(1)
 

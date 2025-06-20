@@ -45,7 +45,6 @@ The script `make_colour_shift.py` downloads the CIFAR-10 test set and stores a v
 where only the first five classes are kept. Each selected image receives an additive
 bias of 32/255. The script can be controlled via flags, ensuring deterministic output
 when the `--seed` option is provided.
-Examples of the shift can be visualised easily.
 ### Training
 
 `train_map.py` trains a WideResNet‑16‑4 for a handful of epochs on the in-distribution
@@ -119,19 +118,12 @@ that keep the runtime short and the code readable are encouraged.
 
 ### Implementation details
 
-All scripts in this repository are written for clarity. Each accepts a `--seed`
-flag and sets `random.seed`, `numpy.random.seed` and `torch.manual_seed` to ensure
-repeatability. The training loop is intentionally short—only six epochs by
-default—so that experiments complete quickly on modest hardware. The network is a
-WideResNet‑16‑4 with around two million parameters, small enough to run on CPU but
-representative of architectures used in the literature. Data loading relies on
-`torchvision` and is restricted to five classes to further reduce runtime.
-
-The Laplace approximation is provided by the `laplace-torch` package. We use the
-Kronecker‑factored structure (`kron`) which balances speed with quality. During
-`la.fit(trainloader)` the code computes gradients of the last layer and estimates
-the Hessian. Predictions are then produced via the approximate posterior over the
-weights. This approach incurs minimal overhead compared with the original network.
+Each script sets `random.seed`, `numpy.random.seed` and `torch.manual_seed` when
+`--seed` is supplied. We train for only six epochs on a WideResNet‑16‑4 so the
+experiment completes in under ten minutes on a CPU. Data loading uses
+`torchvision` and only the first five classes. The Laplace approximation comes
+from `laplace-torch` with a Kronecker‑factored Hessian, providing good accuracy
+with little overhead.
 
 ### Quantitative results
 
@@ -144,13 +136,11 @@ numbers so that automated testing can confirm the hypothesis.
 
 ### Broader perspective
 
-Colour shifts are only one of many domain shifts encountered in the wild. Others
-include changes in camera sensor characteristics, compression artefacts and novel
-object classes. While a Laplace approximation cannot solve all problems, it offers
-a principled and efficient first step toward uncertainty-aware models. When
-combined with methods such as data augmentation and ensembling, the benefits may be
-even more pronounced. We hope that the simple experiment presented here encourages
-further exploration of lightweight Bayesian tools for deep learning.
+Colour shifts are only one of many domain shifts. Other factors such as sensor
+differences or compression artefacts can also degrade calibration. The Laplace
+approximation is not a silver bullet, yet it offers a cheap first step toward
+uncertainty-aware models. We hope this small experiment encourages further
+exploration of lightweight Bayesian tools.
 Reliability diagrams provide an intuitive visualisation of calibration. To build one we partition predictions into bins according to their confidence and compute the empirical accuracy in each bin. Perfect calibration corresponds to the diagonal. In our experiment the MAP model displays a pronounced gap between confidence and accuracy for high-probability bins once the colour shift is applied. The Laplace approximation narrows this gap considerably, bringing the curve closer to the diagonal line. A reliability diagram illustrates this behaviour. Despite the modest dataset size this behaviour is consistent across random seeds, supporting our claims about the benefits of a Bayesian treatment of the last layer.
 ## References
 

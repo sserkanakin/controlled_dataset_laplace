@@ -92,6 +92,7 @@ def main() -> None:
     ece = ece_score(probs, labels)
 
     torch.save({'acc': acc, 'ece': ece}, data_dir / 'map_scores.pt')
+    torch.save({'probs': probs, 'labels': labels}, data_dir / 'map_probs.pt')
 
     print(f"ECE_MAP={ece}")
     print(f"ACC_MAP={acc}")
