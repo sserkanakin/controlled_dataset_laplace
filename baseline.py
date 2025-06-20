@@ -60,14 +60,29 @@ def evaluate(model: torch.nn.Module, loader: DataLoader, device: str) -> Tuple[f
 
 
 def load_model(num_classes: int = 10) -> torch.nn.Module:
-    """Load a WideResNet-28-10 pretrained on CIFAR-10."""
-    try:
-        weights = torchvision.models.Wide_ResNet28_10_Weights.DEFAULT
-        model = torchvision.models.wide_resnet28_10(weights=weights)
-    except AttributeError:
-        # Fallback for older torchvision versions
-        model = torchvision.models.wide_resnet28_10(pretrained=True)
-    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    """Load a WideResNet-28-10 pretrained on CIFAR-10.
+
+    The function first tries ``torchvision``'s official weights. If the model
+    is unavailable (e.g. on very old versions), it falls back to loading a
+    pretrained model via ``torch.hub`` from the `chenyaofo/pytorch-cifar-models`
+    repository.
+    """
+
+    if hasattr(torchvision.models, "wide_resnet28_10"):
+        try:
+            weights = torchvision.models.Wide_ResNet28_10_Weights.DEFAULT
+            model = torchvision.models.wide_resnet28_10(weights=weights)
+        except AttributeError:
+            model = torchvision.models.wide_resnet28_10(pretrained=True)
+    else:
+        model = torch.hub.load(
+            "chenyaofo/pytorch-cifar-models",
+            "cifar10_wide_resnet28_10",
+            pretrained=True,
+        )
+
+    if model.fc.out_features != num_classes:
+        model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
     return model
 
 

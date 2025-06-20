@@ -21,7 +21,9 @@ only pixel colours we keep the task identical and isolate calibration behaviour.
 
 For every CIFAR-10 class we deterministically add an RGB bias as listed in the
 repository. The train set stays unchanged while the control test set receives
-its class-specific colour shift. An overview is shown below.
+its class-specific colour shift. The generation script is available
+<a href="https://github.com/your-username/color-cifar10-shift/blob/main/make_dataset.py" target="_blank">on GitHub</a>.
+An overview is shown below.
 
 <img src="examples/grid.png" width="600" />
 
