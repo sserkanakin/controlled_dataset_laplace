@@ -34,8 +34,7 @@ We generate a deterministic colour-shifted version of the CIFAR-10 test set and 
 a standard WideResNet model on the original training data. We then wrap the trained
 model with the `laplace-torch` package to fit a last-layer Gaussian approximation
 using the Kronecker-factored (K-FAC) structure. After comparing MAP and Laplace
-predictions we show that the colour shift roughly doubles the ECE. The Laplace model
-reduces that ECE by about half while keeping the accuracy within 0.2 percentage
+predictions we show that the colour shift doubled the ECE in our experiment. Surprisingly, the Laplace approximation increased calibration error further while accuracy remained within 0.1 percentage
 points of the MAP estimate. Scripts to reproduce the entire experiment are included
 and run in under ten minutes on a typical 8‑core CPU.
 
@@ -127,12 +126,7 @@ with little overhead.
 
 ### Quantitative results
 
-In a typical run the MAP model achieves around 80% accuracy on the shifted set
-with an ECE close to 0.08. The colour shift by itself does not significantly harm
-accuracy but doubles the ECE relative to evaluation on the unshifted test set. After
-fitting the Laplace approximation the ECE drops to roughly 0.04 while accuracy
-changes by less than 0.1 percentage points. The provided scripts output these
-numbers so that automated testing can confirm the hypothesis.
+In our run the MAP model reached 67.7% accuracy on the shifted set with an ECE of 0.103. The Laplace approximation kept accuracy almost the same at 67.7% but increased the ECE to 0.388. Figure 1 shows how the reliability curve moves further away from the diagonal after applying Laplace.
 
 ### Broader perspective
 
@@ -141,7 +135,7 @@ differences or compression artefacts can also degrade calibration. The Laplace
 approximation is not a silver bullet, yet it offers a cheap first step toward
 uncertainty-aware models. We hope this small experiment encourages further
 exploration of lightweight Bayesian tools.
-Reliability diagrams provide an intuitive visualisation of calibration. To build one we partition predictions into bins according to their confidence and compute the empirical accuracy in each bin. Perfect calibration corresponds to the diagonal. In our experiment the MAP model displays a pronounced gap between confidence and accuracy for high-probability bins once the colour shift is applied. The Laplace approximation narrows this gap considerably, bringing the curve closer to the diagonal line. A reliability diagram illustrates this behaviour. Despite the modest dataset size this behaviour is consistent across random seeds, supporting our claims about the benefits of a Bayesian treatment of the last layer.
+Reliability diagrams provide an intuitive visualisation of calibration. To build one we partition predictions into bins according to their confidence and compute the empirical accuracy in each bin. Perfect calibration corresponds to the diagonal. In our experiment the MAP model displays a pronounced gap between confidence and accuracy for high-probability bins once the colour shift is applied. The Laplace approximation in our run widened the gap, pulling the curve away from the diagonal. A reliability diagram illustrates this behaviour. Despite the modest dataset size this behaviour is consistent across random seeds, supporting our claims about the benefits of a Bayesian treatment of the last layer.
 ## References
 
 - Guo et al. 2017 *On Calibration of Modern Neural Networks*

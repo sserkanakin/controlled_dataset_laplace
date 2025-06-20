@@ -5,10 +5,7 @@
 
 This repository demonstrates how a uniform RGB bias affects calibration of a
 CIFAR-10 model and how a Laplace approximation can recover the lost reliability.
-We keep only the first five classes for speed. When the (+32,+32,+32) shift is
-applied to the test set the expected calibration error roughly doubles while the
-accuracy remains around 80%. Fitting a last-layer Laplace approximation brings
-the ECE back down by half without hurting accuracy.
+We keep only the first five classes for speed. When the (+32,+32,+32) shift is applied, our run saw ECE rise to 0.103 with MAP accuracy 67.7%. Applying the Laplace approximation kept accuracy roughly equal but raised the ECE to 0.388.
 
 ## Installation
 
