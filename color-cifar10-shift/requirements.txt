@@ -1,0 +1,9 @@
+torch>=2.1
+torchvision
+laplace-torch
+datasets
+numpy
+pillow
+matplotlib
+scikit-learn
+tqdm
