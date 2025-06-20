@@ -30,9 +30,9 @@ python baseline.py
 
 The script prints a table with accuracy and Expected Calibration Error on the original and shifted test sets before and after applying Laplace Redux.
 
-Older versions of ``torchvision`` may lack ``wide_resnet28_10``. In that case
-``baseline.py`` automatically loads a compatible pretrained model via
-``torch.hub``.
+``baseline.py`` expects ``torchvision`` >= 0.13 for the pretrained
+``wide_resnet28_10`` model. If your installation is older you must upgrade
+``torchvision`` or adjust the script to load a compatible checkpoint.
 
 ## Further reading
 

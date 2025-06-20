@@ -62,10 +62,10 @@ def evaluate(model: torch.nn.Module, loader: DataLoader, device: str) -> Tuple[f
 def load_model(num_classes: int = 10) -> torch.nn.Module:
     """Load a WideResNet-28-10 pretrained on CIFAR-10.
 
-    The function first tries ``torchvision``'s official weights. If the model
-    is unavailable (e.g. on very old versions), it falls back to loading a
-    pretrained model via ``torch.hub`` from the `chenyaofo/pytorch-cifar-models`
-    repository.
+    The function requires ``torchvision`` >= 0.13 which provides the
+    ``wide_resnet28_10`` architecture and pretrained weights. If your
+    installation lacks this model you need to upgrade ``torchvision`` or
+    manually load a compatible checkpoint.
     """
 
     if hasattr(torchvision.models, "wide_resnet28_10"):
@@ -75,10 +75,9 @@ def load_model(num_classes: int = 10) -> torch.nn.Module:
         except AttributeError:
             model = torchvision.models.wide_resnet28_10(pretrained=True)
     else:
-        model = torch.hub.load(
-            "chenyaofo/pytorch-cifar-models",
-            "cifar10_wide_resnet28_10",
-            pretrained=True,
+        raise RuntimeError(
+            "wide_resnet28_10 is unavailable in your torchvision installation. "
+            "Please install torchvision>=0.13 or load the model manually."
         )
 
     if model.fc.out_features != num_classes:
