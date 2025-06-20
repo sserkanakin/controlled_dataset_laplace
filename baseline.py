@@ -61,8 +61,12 @@ def evaluate(model: torch.nn.Module, loader: DataLoader, device: str) -> Tuple[f
 
 def load_model(num_classes: int = 10) -> torch.nn.Module:
     """Load a WideResNet-28-10 pretrained on CIFAR-10."""
-    weights = torchvision.models.Wide_ResNet28_10_Weights.DEFAULT
-    model = torchvision.models.wide_resnet28_10(weights=weights)
+    try:
+        weights = torchvision.models.Wide_ResNet28_10_Weights.DEFAULT
+        model = torchvision.models.wide_resnet28_10(weights=weights)
+    except AttributeError:
+        # Fallback for older torchvision versions
+        model = torchvision.models.wide_resnet28_10(pretrained=True)
     model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
     return model
 
