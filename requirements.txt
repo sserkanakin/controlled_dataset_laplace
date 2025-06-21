@@ -1,0 +1,6 @@
+torch>=2
+torchvision
+laplace-torch
+scikit-learn
+matplotlib
+tqdm
