@@ -1,7 +1,5 @@
 # Controlled Dataset Laplace
-
-[![GitHub Repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/your/repo)
-[![DOI](https://img.shields.io/badge/zenodo-doi-green)](https://zenodo.org/badge/latestdoi/12345)
+# =========================
 
 This repository demonstrates how a uniform RGB bias affects calibration of a
 CIFAR-10 model and how a Laplace approximation can recover the lost reliability.
@@ -27,7 +25,7 @@ python src/train_laplace.py --hessian kron
 ```
 
 The second script prints `ECE_MAP` and `ACC_MAP`. The third script prints all
-four lines and exits with code `1` if calibration does not improve sufficiently.
+four lines.
 
 Open `notebooks/inspect.ipynb` to plot reliability diagrams and scatter plots
 from the saved predictions.
@@ -36,4 +34,3 @@ from the saved predictions.
 - Guo et al. 2017 *On Calibration of Modern Neural Networks*
 - Ritter et al. 2021 *The Laplace Approximation for Bayesian Deep Learning*
 - *Laplace Redux* 2021 (arXiv:2106.14806)
-- Van Gemert 2024 *Research Guidelines in Deep Learning*
