@@ -1,7 +1,3 @@
-Of course. Here is the description of the dataset with citations added, based on the provided sources.
-
----
-
 ### **A Controlled Dataset for Calibration: The Uniform Color-Shifted CIFAR-10**
 
 In machine learning research, understanding why a model fails is as important as measuring its success. Modern deep neural networks, despite their high accuracy, often suffer from being overconfident [1] and brittle when faced with data that differs even slightly from what they were trained on[3]. This is a critical issue in safety-conscious fields like autonomous driving, where a model that is "99% sure" but wrong can lead to accidents[3].
